@@ -33,11 +33,6 @@ jobs:
           echo "CLI tool location:"
           pwd
           ls -la dify-plugin-linux-amd64
-          
-      - name: Verify GitHub CLI
-        run: |
-          # GitHub Actions ubuntu-latest runner already has gh CLI pre-installed
-          gh --version || echo "Warning: GitHub CLI not found, but it should be pre-installed"
 
       - name: Get basic info from manifest # Changed step name and content
         id: get_basic_info
