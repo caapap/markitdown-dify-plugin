@@ -34,14 +34,10 @@ jobs:
           pwd
           ls -la dify-plugin-linux-amd64
           
-      - name: Install GitHub CLI
+      - name: Verify GitHub CLI
         run: |
-          type -p curl >/dev/null || (apt update && apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && apt update \
-          && apt install gh -y
+          # GitHub Actions ubuntu-latest runner already has gh CLI pre-installed
+          gh --version || echo "Warning: GitHub CLI not found, but it should be pre-installed"
 
       - name: Get basic info from manifest # Changed step name and content
         id: get_basic_info
