@@ -72,6 +72,16 @@ jobs:
           echo "\\nDirectory structure:"
           tree || ls -R
 
+      - name: Verify Secret
+        run: |
+          if [ -z "${{ secrets.PLUGIN_ACTION }}" ]; then
+            echo "Error: PLUGIN_ACTION secret is not configured!"
+            echo "Please add PLUGIN_ACTION secret in repository Settings > Secrets > Actions"
+            exit 1
+          else
+            echo "PLUGIN_ACTION secret is configured"
+          fi
+
       - name: Checkout target repo
         uses: actions/checkout@v3
         with:
