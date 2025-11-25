@@ -1,15 +1,13 @@
-version: 0.0.4
+version: 0.0.5
 type: plugin
-author: yevanchen
+author: caapap 
 name: markitdown
 label:
   en_US: markitdown
-  ja_JP: markitdown
   zh_Hans: markitdown
   pt_BR: markitdown
 description:
   en_US: Python tool for converting files and office documents to Markdown.
-  ja_JP: Python tool for converting files and office documents to Markdown.
   zh_Hans: Python tool for converting files and office documents to Markdown.
   pt_BR: Python tool for converting files and office documents to Markdown.
 icon: micro.png
@@ -36,6 +34,6 @@ meta:
     language: python
     version: "3.12"
     entrypoint: main
-created_at: 2025-02-17T14:48:25.4874+08:00
+created_at: 2025-11-24T14:48:25.4874+08:00
 privacy: PRIVACY.md
 verified: false

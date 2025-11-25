@@ -25,14 +25,23 @@ jobs:
           mkdir -p $RUNNER_TEMP/bin
           cd $RUNNER_TEMP/bin
 
-          # Download CLI tool
-          wget https://github.com/langgenius/dify-plugin-daemon/releases/download/0.0.6/dify-plugin-linux-amd64
+          # Download latest CLI tool
+          wget https://github.com/langgenius/dify-plugin-daemon/releases/latest/download/dify-plugin-linux-amd64
           chmod +x dify-plugin-linux-amd64
 
           # Show download location and file
           echo "CLI tool location:"
           pwd
           ls -la dify-plugin-linux-amd64
+          
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (apt update && apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && apt update \
+          && apt install gh -y
 
       - name: Get basic info from manifest # Changed step name and content
         id: get_basic_info
@@ -109,6 +118,7 @@ jobs:
 
           # Create and switch to a new branch using variables and new naming convention
           BRANCH_NAME="bump-${{ steps.get_basic_info.outputs.plugin_name }}-plugin-${{ steps.get_basic_info.outputs.version }}"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
           git checkout -b "$BRANCH_NAME"
 
           # Add and commit changes (using git add .)
@@ -131,13 +141,14 @@ jobs:
         run: |
           gh pr create \
             --repo langgenius/dify-plugins \
-            --head "${{ steps.get_basic_info.outputs.author }}:${{ steps.get_basic_info.outputs.plugin_name }}-${{ steps.get_basic_info.outputs.version }}" \
+            --head "${{ steps.get_basic_info.outputs.author }}:${{ env.BRANCH_NAME }}" \
             --base main \
             --title "bump ${{ steps.get_basic_info.outputs.plugin_name }} plugin to version ${{ steps.get_basic_info.outputs.version }}" \
             --body "bump ${{ steps.get_basic_info.outputs.plugin_name }} plugin package to version ${{ steps.get_basic_info.outputs.version }}
 
             Changes:
-            - Updated plugin package file" || echo "PR already exists or creation skipped." # Handle cases where PR already exists
+            - Updated plugin package file
+            - Added LLM support for image description (OpenAI compatible)" || echo "PR already exists or creation skipped." # Handle cases where PR already exists
 
       - name: Print environment info # Kept for debugging
         run: |

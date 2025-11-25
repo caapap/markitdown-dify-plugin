@@ -2,6 +2,10 @@ from collections.abc import Generator
 from typing import Any
 import tempfile
 import os
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
@@ -21,6 +25,23 @@ class MarkitdownTool(Tool):
             })
             return
 
+        # Configure LLM client if enabled
+        llm_enabled = tool_parameters.get('llm_enabled', False)
+        llm_api_key = tool_parameters.get('llm_api_key')
+        llm_base_url = tool_parameters.get('llm_base_url')
+        llm_model = tool_parameters.get('llm_model')
+
+        client = None
+        if llm_enabled and llm_api_key and OpenAI:
+            try:
+                client = OpenAI(
+                    api_key=llm_api_key,
+                    base_url=llm_base_url if llm_base_url else None
+                )
+            except Exception as e:
+                yield self.create_text_message(f"Error initializing LLM client: {str(e)}")
+                # Continue without LLM
+
         results = []
         json_results = []
         
@@ -34,7 +55,7 @@ class MarkitdownTool(Tool):
                     temp_file_path = temp_file.name
                 
                 try:
-                    md = MarkItDown()
+                    md = MarkItDown(llm_client=client, llm_model=llm_model)
                     result = md.convert(temp_file_path)
                     
                     # Create blob message for backward compatibility

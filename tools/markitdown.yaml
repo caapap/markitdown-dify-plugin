@@ -24,6 +24,55 @@ parameters:
       zh_Hans: 上传文件进行处理
       pt_BR: Carregar arquivos para processamento
     form: llm
+  - name: llm_enabled
+    type: boolean
+    required: false
+    default: false
+    label:
+      en_US: Enable LLM for Image Description
+      zh_Hans: 启用 LLM 进行图片描述
+      pt_BR: Enable LLM for Image Description
+    human_description:
+      en_US: Enable LLM for Image Description
+      zh_Hans: 启用 LLM 进行图片描述
+      pt_BR: Enable LLM for Image Description
+    form: form
+  - name: llm_api_key
+    type: secret-input
+    required: false
+    label:
+      en_US: API Key
+      zh_Hans: API Key
+      pt_BR: API Key
+    human_description:
+      en_US: API Key
+      zh_Hans: API Key
+      pt_BR: API Key
+    form: form
+  - name: llm_base_url
+    type: string
+    required: false
+    label:
+      en_US: Base URL
+      zh_Hans: Base URL
+      pt_BR: Base URL
+    human_description:
+      en_US: Base URL
+      zh_Hans: Base URL
+      pt_BR: Base URL
+    form: form
+  - name: llm_model
+    type: string
+    required: false
+    label:
+      en_US: Model Name
+      zh_Hans: 模型名称
+      pt_BR: Model Name
+    human_description:
+      en_US: Model Name (e.g., gpt-4o)
+      zh_Hans: 模型名称 (例如 gpt-4o)
+      pt_BR: Model Name (e.g., gpt-4o)
+    form: form
 extra:
   python:
     source: tools/markitdown.py
